@@ -1,0 +1,7 @@
+logging:
+  level:
+    root: INFO
+    org.springframework.web: warn
+    org.hibernate: warn
+  file-external: logs/demo-${spring.profiles}-external.log
+  file-internal: logs/demo-${spring.profiles}-internal.log
