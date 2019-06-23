@@ -1,6 +1,7 @@
 package com.session.demo.demo.entity;
 
 import com.session.demo.demo.entity.base.BaseEntity;
+import com.session.demo.demo.helper.enums.FundTransactionDirectEnum;
 import com.session.demo.demo.helper.enums.FundTransactionTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
@@ -23,8 +24,7 @@ public class FundTransaction extends BaseEntity {
 
     private BigDecimal amount;
 
-    @Enumerated(EnumType.STRING)
-    private FundTransactionTypeEnum fundTransactionType;
+    private String fundTransactionType;
 
     @Override
     public String getPrefix() {

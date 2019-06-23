@@ -4,6 +4,7 @@ plugins {
 }
 
 apply plugin: 'io.spring.dependency-management'
+apply plugin: 'jacoco'
 
 group = 'com.session.demo'
 version = '0.0.1-SNAPSHOT'
@@ -39,6 +40,34 @@ dependencies {
 
 test {
 	useJUnitPlatform()
+}
+
+jacoco {
+	toolVersion = "0.8.4"
+}
+
+subprojects {
+	jacocoTestReport {
+		reports {
+			html.enabled = true
+			xml.enabled = true
+			csv.enabled = false
+		}
+	}
+}
+
+test.finalizedBy jacocoTestReport
+
+jacocoTestCoverageVerification {
+	violationRules {
+		rule {
+			limit {
+				counter = 'LINE'
+				value = 'COVEREDRATIO'
+				minimum = 0.0
+			}
+		}
+	}
 }
 
 def profiles = 'dev'

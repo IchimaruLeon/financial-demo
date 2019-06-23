@@ -1,11 +1,10 @@
 package com.session.demo.demo.controller;
 
 import com.session.demo.demo.dto.internalDTO.FundTransactionCreatedDTO;
-import com.session.demo.demo.dto.internalDTO.RequestPageDTO;
-import com.session.demo.demo.entity.FundTransaction;
 import com.session.demo.demo.handler.ResponseModel;
 import com.session.demo.demo.helper.FundTransactionConverter;
-import com.session.demo.demo.helper.enums.FundTransactionTypeEnum;
+import com.session.demo.demo.helper.enums.FundTransactionDirectEnum;
+import com.session.demo.demo.helper.enums.FundTransactionUnDirectEnum;
 import com.session.demo.demo.service.FundTransactionService;
 import lombok.extern.slf4j.Slf4j;
 import org.hibernate.validator.constraints.Range;
@@ -32,7 +31,7 @@ public class FundTransactionController {
 
     @PostMapping("/{transactionType}/{accountId}/{amount}")
     public ResponseEntity<ResponseModel<FundTransactionCreatedDTO>> postTransaction(@Validated
-                                          @PathVariable @NotBlank FundTransactionTypeEnum transactionType,
+                                          @PathVariable @NotBlank FundTransactionDirectEnum transactionType,
                                                          @PathVariable @NotBlank String accountId,
                                                          @PathVariable @NotBlank
                                           @Range(min = 0L, message = "Please select positive numbers Only")
@@ -41,6 +40,21 @@ public class FundTransactionController {
         log.info("incoming transaction for {} from account no : {}, with amount : {}", transactionType, accountId, amount);
 
         FundTransactionCreatedDTO fundTransactionCreatedDTO = fundTransactionService.createTransaction(transactionType, accountId, amount);
+        return ResponseModel.success(fundTransactionCreatedDTO);
+    }
+
+    @PostMapping("/{transactionType}/{accountIdFrom}/{accountIdTo}/{amount}")
+    public ResponseEntity<ResponseModel<FundTransactionCreatedDTO>> postTransfer(@Validated
+                                                                                    @PathVariable @NotBlank FundTransactionUnDirectEnum transactionType,
+                                                                                    @PathVariable @NotBlank String accountIdFrom,
+                                                                                    @PathVariable @NotBlank String accountIdTo,
+                                                                                    @PathVariable @NotBlank
+                                                                                    @Range(min = 0L, message = "Please select positive numbers Only")
+                                                                                    @DecimalMin(value = "0.01", message = "Amount must be positive and greater than 0")
+                                                                                    @DecimalMax(value = "9999999999999.99", message = "Amount must be less than 9999999999999.99, unless you are very rich lets meet up") BigDecimal amount) {
+        log.info("post transfer from {} to {} for {}  with amount : {}", accountIdFrom, accountIdTo, transactionType, amount);
+
+        FundTransactionCreatedDTO fundTransactionCreatedDTO = fundTransactionService.createTransfer(transactionType, accountIdFrom, accountIdTo, amount);
         return ResponseModel.success(fundTransactionCreatedDTO);
     }
 
@@ -64,6 +78,6 @@ public class FundTransactionController {
 
     @InitBinder
     public void initBinder(final WebDataBinder webdataBinder) {
-        webdataBinder.registerCustomEditor(FundTransactionTypeEnum.class, new FundTransactionConverter());
+        webdataBinder.registerCustomEditor(FundTransactionDirectEnum.class, new FundTransactionConverter());
     }
 }
