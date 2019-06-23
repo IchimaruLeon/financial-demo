@@ -2,11 +2,11 @@ package com.session.demo.demo.helper.enums;
 
 import java.util.Arrays;
 
-public enum FundTransactionDirectEnum implements FundTransactionTypeEnum {
-    TOP_UP(TypeFlagEnum.CREDIT),
-    CASH_OUT(TypeFlagEnum.DEBIT);
+public enum FundTransactionBackgroundEnum implements FundTransactionTypeEnum {
+    TRANSFER_IN(TypeFlagEnum.CREDIT),
+    TAX(TypeFlagEnum.DEBIT);
 
-    FundTransactionDirectEnum(TypeFlagEnum typeFlagEnum) {
+    FundTransactionBackgroundEnum(TypeFlagEnum typeFlagEnum) {
         this.typeFlagEnum = typeFlagEnum;
     }
 
@@ -19,8 +19,8 @@ public enum FundTransactionDirectEnum implements FundTransactionTypeEnum {
         return this.typeFlagEnum;
     }
 
-    public FundTransactionDirectEnum fromValue(String value) {
-        for (FundTransactionDirectEnum fundTransactionType : values()) {
+    public FundTransactionBackgroundEnum fromValue(String value) {
+        for (FundTransactionBackgroundEnum fundTransactionType : values()) {
             if (fundTransactionType.name().equalsIgnoreCase(value)) {
                 return fundTransactionType;
             }
@@ -28,6 +28,5 @@ public enum FundTransactionDirectEnum implements FundTransactionTypeEnum {
         throw new IllegalArgumentException(
                 "Unknown enum type " + value + ", Allowed values are " + Arrays.toString(values()));
     }
-
     private TypeFlagEnum typeFlagEnum;
 }

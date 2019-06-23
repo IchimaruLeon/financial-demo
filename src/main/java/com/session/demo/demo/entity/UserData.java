@@ -3,14 +3,15 @@ package com.session.demo.demo.entity;
 import com.session.demo.demo.entity.base.Historical;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.OneToOne;
+import javax.persistence.Table;
 
 @Entity
 @Setter
 @Getter
-@ToString
 @Table(name = "user_data")
 public class UserData extends Historical {
 

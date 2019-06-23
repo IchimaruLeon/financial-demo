@@ -1,19 +1,18 @@
 package com.session.demo.demo.entity;
 
 import com.session.demo.demo.entity.base.BaseEntity;
-import com.session.demo.demo.helper.enums.FundTransactionDirectEnum;
-import com.session.demo.demo.helper.enums.FundTransactionTypeEnum;
 import lombok.Getter;
 import lombok.Setter;
-import lombok.ToString;
-
-import javax.persistence.*;
+import javax.persistence.CascadeType;
+import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 import java.math.BigDecimal;
 
 @Entity
 @Setter
 @Getter
-@ToString
 @Table(name = "fund_transaction")
 public class FundTransaction extends BaseEntity {
 
@@ -21,6 +20,9 @@ public class FundTransaction extends BaseEntity {
 
     @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
     private Account account;
+
+    @ManyToOne(fetch = FetchType.LAZY, cascade = CascadeType.ALL)
+    private Account accountTo;
 
     private BigDecimal amount;
 

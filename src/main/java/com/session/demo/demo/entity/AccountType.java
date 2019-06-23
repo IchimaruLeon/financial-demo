@@ -10,7 +10,6 @@ import javax.persistence.Table;
 @Entity
 @Setter
 @Getter
-@ToString
 @Table(name = "account_type")
 public class AccountType extends Parameterized {
 

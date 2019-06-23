@@ -16,7 +16,6 @@ import java.math.BigDecimal;
 @Entity
 @Setter
 @Getter
-@ToString
 @Table(name = "account")
 public class Account extends Historical {
 

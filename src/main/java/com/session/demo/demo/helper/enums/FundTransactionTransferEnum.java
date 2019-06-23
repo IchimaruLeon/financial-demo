@@ -2,12 +2,10 @@ package com.session.demo.demo.helper.enums;
 
 import java.util.Arrays;
 
-    public enum FundTransactionUnDirectEnum implements FundTransactionTypeEnum {
-    TRANSFER_IN(TypeFlagEnum.CREDIT),
-    TAX(TypeFlagEnum.DEBIT),
+    public enum FundTransactionTransferEnum implements FundTransactionTypeEnum {
     TRANSFER_OUT(TypeFlagEnum.DEBIT);
 
-    FundTransactionUnDirectEnum(TypeFlagEnum typeFlagEnum) {
+    FundTransactionTransferEnum(TypeFlagEnum typeFlagEnum) {
         this.typeFlagEnum = typeFlagEnum;
     }
 
@@ -20,8 +18,8 @@ import java.util.Arrays;
             return this.typeFlagEnum;
         }
 
-    public static FundTransactionUnDirectEnum fromValue(String value) {
-        for (FundTransactionUnDirectEnum fundTransactionType : values()) {
+    public FundTransactionTransferEnum fromValue(String value) {
+        for (FundTransactionTransferEnum fundTransactionType : values()) {
             if (fundTransactionType.name().equalsIgnoreCase(value)) {
                 return fundTransactionType;
             }

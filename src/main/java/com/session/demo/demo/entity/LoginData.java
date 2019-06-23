@@ -11,7 +11,6 @@ import javax.persistence.Table;
 @Entity
 @Setter
 @Getter
-@ToString
 @Table(name = "login_data")
 public class LoginData extends Historical {
 

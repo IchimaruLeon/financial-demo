@@ -5,12 +5,8 @@ import lombok.Setter;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-
 import java.math.BigDecimal;
 
-/**
- * Base class for Api Request contains refCode
- */
 @Setter
 @Getter
 public class RequestPageDTO {
