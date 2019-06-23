@@ -2,9 +2,13 @@ package com.session.demo.demo.repository;
 
 import com.session.demo.demo.dto.internalDTO.FundTransactionData;
 import com.session.demo.demo.entity.FundTransaction;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
+
+import java.util.Optional;
 
 public interface FundTransactionRepository extends JpaRepository<FundTransaction, String> {
 
@@ -12,4 +16,7 @@ public interface FundTransactionRepository extends JpaRepository<FundTransaction
             "INNER JOIN account a ON ft.account_id=a.id AND a.id =:accountId", nativeQuery = true)
     FundTransactionData getActiveBalance(@Param("accountId") String accountId);
 
+    Optional<FundTransaction> findByIdAndAccountId(String id, String accountId);
+
+    Page<FundTransaction> findByAccountId(String accountId, Pageable pageable);
 }

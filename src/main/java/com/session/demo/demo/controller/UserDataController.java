@@ -2,6 +2,7 @@ package com.session.demo.demo.controller;
 
 import com.session.demo.demo.dto.internalDTO.UserDataDTO;
 import com.session.demo.demo.entity.UserData;
+import com.session.demo.demo.handler.ResponseModel;
 import com.session.demo.demo.helper.StringUtils;
 import com.session.demo.demo.service.UserDataService;
 import io.swagger.annotations.ApiOperation;
@@ -32,10 +33,9 @@ public class UserDataController {
                     @ApiResponse(code = 500, message = "server error")
             })
     @PostMapping("/create")
-    public ResponseEntity<UserDataDTO> create() {
+    public ResponseEntity<ResponseModel<UserDataDTO>> create() {
         UserDataDTO userDataDTO = userDataService.create();
         log.info("will return created user data : {}", StringUtils.convertObjToStringValues(userDataDTO));
-        ResponseEntity<UserDataDTO> userDataDTOResponseEntity = ResponseEntity.of(Optional.of(userDataDTO));
-        return userDataDTOResponseEntity;
+        return ResponseModel.success(userDataDTO);
     }
 }
