@@ -6,6 +6,7 @@ import com.session.demo.demo.entity.UserData;
 import com.session.demo.demo.handler.AppException;
 import com.session.demo.demo.handler.ResponseCodeEnum;
 import com.session.demo.demo.repository.AccountRepository;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
@@ -18,6 +19,7 @@ import java.util.Optional;
 
 @Slf4j
 @Service
+@Setter
 public class AccountService {
 
     @Autowired

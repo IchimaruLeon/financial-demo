@@ -17,7 +17,4 @@ public class SampleResourceDTO {
     @JsonProperty("info")
     private InfoDTO info;
 
-
-
-
 }

@@ -13,7 +13,6 @@ import org.modelmapper.ModelMapper;
 import org.modelmapper.convention.MatchingStrategies;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
-
 import javax.transaction.Transactional;
 
 @Slf4j
@@ -40,7 +39,7 @@ public class UserDataService {
         log.info("sample user : {}", StringUtils.convertObjToStringValues(sampleUserDTO));
 
         UserData userData = buildUserData(sampleUserDTO);
-        userData.setLoginData(buildLoginDataFromLoginDto(sampleUserDTO.getLogin()));
+        userData.setLoginData(buildLoginData(sampleUserDTO.getLogin()));
         Account account = accountService.create(userData);
         save(userData);
         UserDataDTO userDataDTO = buildUserDataDTO(userData, account, sampleUserDTO.getLogin());
@@ -62,7 +61,7 @@ public class UserDataService {
         return userData;
     }
 
-    public LoginData buildLoginDataFromLoginDto(LoginDTO loginDTO) {
+    public LoginData buildLoginData(LoginDTO loginDTO) {
         return loginDataService.create(loginDTO);
     }
 
