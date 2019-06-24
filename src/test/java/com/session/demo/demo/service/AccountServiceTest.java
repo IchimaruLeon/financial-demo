@@ -89,6 +89,7 @@ class AccountServiceTest {
         assertNotNull(accountDTO);
         assertEquals("ACC001",accountDTO.getId());
         assertEquals(BigDecimal.ZERO,accountDTO.getActiveBalance());
+        assertEquals("USD001", accountDTO.getUserDataId());
         assertEquals("SAMPLE FIRST NAME",accountDTO.getFirstName());
         assertEquals("SAMPLE LAST NAME",accountDTO.getLastName());
         assertEquals("userexample-01@sample-mail.com",accountDTO.getEmail());
