@@ -64,8 +64,4 @@ public class ResponseModel<T> {
         return new ResponseModel<>(code.name(), message);
     }
 
-//    public boolean successful() {
-//        return ResponseCodeEnum.SUCCESS.name().equals(code);
-//    }
-
 }

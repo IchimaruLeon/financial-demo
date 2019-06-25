@@ -7,7 +7,6 @@ import lombok.ToString;
 
 @Setter
 @Getter
-@ToString
 public class PictureDTO {
     @JsonProperty("large")
     private String large;

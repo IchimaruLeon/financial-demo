@@ -7,7 +7,6 @@ import java.math.BigDecimal;
 
 @Setter
 @Getter
-@ToString
 public class AccountDTO {
 
     String id;

@@ -6,7 +6,6 @@ import lombok.ToString;
 
 @Setter
 @Getter
-@ToString
 public class UserDataDTO {
 
     private String id;

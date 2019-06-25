@@ -6,12 +6,7 @@ import com.session.demo.demo.entity.Account;
 import com.session.demo.demo.entity.FundTransaction;
 import com.session.demo.demo.handler.AppException;
 import com.session.demo.demo.handler.ResponseCodeEnum;
-import com.session.demo.demo.helper.StringUtils;
-import com.session.demo.demo.helper.enums.FundTransactionBackgroundEnum;
-import com.session.demo.demo.helper.enums.FundTransactionDirectEnum;
-import com.session.demo.demo.helper.enums.FundTransactionTransferEnum;
-import com.session.demo.demo.helper.enums.FundTransactionTypeEnum;
-import com.session.demo.demo.helper.enums.TypeFlagEnum;
+import com.session.demo.demo.helper.enums.*;
 import com.session.demo.demo.repository.FundTransactionRepository;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -20,8 +15,10 @@ import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
+
 import javax.transaction.Transactional;
 import java.math.BigDecimal;
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -38,7 +35,7 @@ public class FundTransactionService {
 
     @Transactional
     public FundTransactionCreatedDTO createTransaction(FundTransactionDirectEnum transactionTypeEnum, String accountId, BigDecimal amount) {
-        BigDecimal trxAmount = getAmountByType(transactionTypeEnum,amount);
+        BigDecimal trxAmount = getAmountByType(transactionTypeEnum,amount.abs());
 
         Optional<Account> accountOptional = accountService.findById(accountId);
 
@@ -56,7 +53,7 @@ public class FundTransactionService {
 
     @Transactional
     public FundTransactionCreatedDTO createTransfer(FundTransactionTransferEnum transactionTypeEnum, String accountIdFrom, String accountIdTo, BigDecimal amount) {
-        BigDecimal trxAmount = getAmountByType(transactionTypeEnum,amount);
+        BigDecimal trxAmount = getAmountByType(transactionTypeEnum,amount.abs());
         Optional<Account> accountFromOptional = accountService.findById(accountIdFrom);
         Optional<Account> accountToOptional = accountService.findById(accountIdTo);
 
@@ -121,11 +118,28 @@ public class FundTransactionService {
     }
 
     public BigDecimal getAmountByType(FundTransactionTypeEnum transactionTypeEnum, BigDecimal amount) {
-
+        log.info("FundTransactionTypeEnum is {} with amount {}", transactionTypeEnum.getName(), amount);
         if (TypeFlagEnum.CREDIT.equals(transactionTypeEnum.getTypeFlagEnum())) {
             return amount.abs();
         } else {
             return amount.compareTo(BigDecimal.ZERO) > 0 ? amount.negate() : amount;
+        }
+    }
+
+    public void validateAmountAndActiveBalance(FundTransactionTypeEnum transactionTypeEnum, BigDecimal trxAmount, Account account) {
+        log.info("amount : {} , transaction type : {}, flagType : {}, currentBalance : {}", trxAmount, transactionTypeEnum.getName(), transactionTypeEnum.getTypeFlagEnum(), account.getActiveBalance());
+        validateAmountIsNotZero(trxAmount);
+        if (TypeFlagEnum.DEBIT.equals(transactionTypeEnum.getTypeFlagEnum())) {
+                log.info("validate amount : {}", account.getActiveBalance().compareTo(trxAmount.abs()));
+                if (isBalanceNotEnough(account, trxAmount)) {
+                    throw new AppException(ResponseCodeEnum.INSUFFICIENT_BALANCE, "Insufficient Balance, please do top up first");
+                }
+            }
+    }
+
+    private void validateAmountIsNotZero(BigDecimal trxAmount) {
+        if (0 == trxAmount.compareTo(BigDecimal.ZERO)) {
+            throw new AppException(ResponseCodeEnum.TRANSACTION_AMOUNT_CANT_BE_ZERO, String.format("cant make transaction with amount : %s", trxAmount));
         }
     }
 
@@ -135,6 +149,7 @@ public class FundTransactionService {
         fundTransaction.setAccount(accountFrom);
         fundTransaction.setAccountTo(accountTo);
         fundTransaction.setAmount(trxAmount);
+        fundTransaction.setCreatedDate(Instant.now());
         save(fundTransaction);
         return fundTransaction;
     }
@@ -144,13 +159,14 @@ public class FundTransactionService {
         fundTransaction.setFundTransactionType(name);
         fundTransaction.setAccount(account);
         fundTransaction.setAmount(trxAmount);
+        fundTransaction.setCreatedDate(Instant.now());
         save(fundTransaction);
         return fundTransaction;
     }
 
     private Account validateAccountExistence(String accountId, Optional<Account> accountOptional) {
         if (!accountOptional.isPresent()) {
-            throw new RuntimeException(String.format("Account not found with id %s", accountId));
+            throw new AppException(ResponseCodeEnum.NOT_FOUND, String.format("Account not found with id %s", accountId));
         } else {
             return accountOptional.get();
         }
@@ -160,18 +176,4 @@ public class FundTransactionService {
         return account.getActiveBalance().compareTo(transactionAmount.abs()) < 0;
     }
 
-    private void validateAmountAndActiveBalance(FundTransactionTypeEnum transactionTypeEnum, BigDecimal trxAmount, Account account) {
-        if(TypeFlagEnum.DEBIT == transactionTypeEnum.getTypeFlagEnum()){
-            log.info("amount : {} , transaction type : {}, flagType : {}, currentBalance : {}", trxAmount, transactionTypeEnum.getName(), transactionTypeEnum.getTypeFlagEnum(), account.getActiveBalance());
-            if (0 == trxAmount.compareTo(BigDecimal.ZERO)) {
-                throw new AppException(ResponseCodeEnum.TRANSACTION_AMOUNT_CANT_BE_ZERO, String.format("cant make transaction with amount : %s", trxAmount));
-            }
-            if (TypeFlagEnum.DEBIT.equals(transactionTypeEnum.getTypeFlagEnum())) {
-                log.info("validate amount : {}", account.getActiveBalance().compareTo(trxAmount.abs()));
-                if (isBalanceNotEnough(account, trxAmount)) {
-                    throw new AppException(ResponseCodeEnum.INSUFFICIENT_BALANCE, "Insufficient Balance, please do top up first");
-                }
-            }
-        }
-    }
 }
